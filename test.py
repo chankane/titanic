@@ -1,9 +1,12 @@
+import numpy as np
 import pandas as pd
+from sklearn import tree
 
 import missing as ms
 
 CHERBOURG, QUEENSTOWN, SOUTHAMPTON = range(3)
-MS_FUNC = ms.del_nan
+# MS_FUNC = ms.del_nan
+MS_FUNC = ms.fill_zero
 
 
 def replace(data):
@@ -13,7 +16,6 @@ def replace(data):
     }
     res = data.copy()
     for k, v in conf.items():
-        print(k, v)
         res[k] = data[k].replace(v)
     return res
 
@@ -22,17 +24,36 @@ def norm(data):
     return replace(MS_FUNC(data))
 
 
-def read():
-    return pd.read_csv("./data/train.csv"), pd.read_csv("./data/test.csv")
+def write(pred, idx_offset=0):
+    idx = np.arange(len(pred)) + idx_offset
+
+    data = np.array((idx, pred)).T
+
+    res = pd.DataFrame(data, columns=("PassengerId", "Survived"))
+    res.to_csv("result.csv", index=None)
 
 
 def main():
-    *data_list, = read()
+    train = pd.read_csv("./data/train.csv")
+    test = pd.read_csv("./data/test.csv")
 
-    for i, e in enumerate(data_list):
-        data_list[i] = norm(e)
+    train_len = len(train)
 
-    print(data_list[0].head())
+    train = norm(train)
+    test = norm(test)
+
+    target = train["Survived"].values
+    # explain = train[["Pclass", "Sex", "Age", "Fare"]].values
+    explain = train[["PassengerId"]].values
+    d_tree = tree.DecisionTreeClassifier()
+    d_tree = d_tree.fit(explain, target)
+
+    # test_explain = test[["Pclass", "Sex", "Age", "Fare"]].values
+    test_explain = test[["PassengerId"]].values
+    pred = d_tree.predict(test_explain)
+
+    write(pred, train_len + 1)
+
 
 if __name__ == "__main__":
     main()
