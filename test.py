@@ -1,12 +1,11 @@
 import numpy as np
 import pandas as pd
-from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
 
 import missing as ms
 
 CHERBOURG, QUEENSTOWN, SOUTHAMPTON = range(3)
-# MS_FUNC = ms.del_nan
-MS_FUNC = ms.fill_zero
+MS_FUNC = ms.fill_median
 
 
 def replace(data):
@@ -21,7 +20,7 @@ def replace(data):
 
 
 def norm(data):
-    return replace(MS_FUNC(data))
+    return MS_FUNC(replace(data))
 
 
 def write(pred, idx_offset=0):
@@ -39,18 +38,21 @@ def main():
 
     train_len = len(train)
 
+    print(train.head())
+
     train = norm(train)
     test = norm(test)
 
-    target = train["Survived"].values
-    # explain = train[["Pclass", "Sex", "Age", "Fare"]].values
-    explain = train[["PassengerId"]].values
-    d_tree = tree.DecisionTreeClassifier()
-    d_tree = d_tree.fit(explain, target)
+    exp = ["PassengerId", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked"]
 
-    # test_explain = test[["Pclass", "Sex", "Age", "Fare"]].values
-    test_explain = test[["PassengerId"]].values
-    pred = d_tree.predict(test_explain)
+    target = train["Survived"].values
+    explain = train[exp].values
+
+    clf = RandomForestClassifier(random_state=0, n_estimators=100, verbose=True)
+    clf = clf.fit(explain, target)
+
+    test_explain = test[exp].values
+    pred = clf.predict(test_explain)
 
     write(pred, train_len + 1)
 
