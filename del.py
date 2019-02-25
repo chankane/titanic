@@ -7,7 +7,7 @@ import cabin
 
 
 CHERBOURG, QUEENSTOWN, SOUTHAMPTON = range(3)
-MS_FUNC = ms.fill_median
+MS_FUNC = ms.del_nan
 
 
 def replace(data):
@@ -22,8 +22,9 @@ def replace(data):
 
 
 def norm(df):
-    df["Cabin"].fillna("A0", inplace=True)
-    return MS_FUNC(replace(df))
+    t = MS_FUNC(replace(df))
+    t.reset_index(drop=True, inplace=True)
+    return t
 
 
 def write(pred, idx_offset=0):
@@ -41,28 +42,25 @@ def main():
 
     train_len = len(train)
 
-    print(train.head())
-
     train = norm(train)
     test = norm(test)
+
     train = cabin.conv_row(train)
     test = cabin.conv_row(test)
 
     print(train.head())
+    print(test.head())
 
     #exp = ["PassengerId", "Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "Cabin_g", "Cabin_f", "Cabin_l"]
-    exp = ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked"]
+    exp = ["Pclass", "Sex", "Age", "SibSp", "Parch", "Fare", "Embarked", "Cabin_y"]
 
     target = train["Survived"].values
     explain = train[exp].values
-    print(explain)
-    print(target)
 
     clf = RandomForestClassifier(random_state=0, n_estimators=100, verbose=True)
     clf = clf.fit(explain, target)
 
     test_explain = test[exp].values
-    print(test_explain)
     pred = clf.predict(test_explain)
 
     write(pred, train_len + 1)
