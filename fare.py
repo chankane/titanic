@@ -1,39 +1,37 @@
 # Fill fare
-# del col
-# ans = 7.8958
+# ans = 78958
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 
 import pred
 import main as m
 
 
 X = ["PassengerId", "Pclass", "Sex", "SibSp", "Parch"]
-Y = "Fare"
+Y = ["Fare"]
 
 
-def fill(df):
+# NaN is an float value and need to fill some integer value
+def _norm(df):
     _df = df.copy()
+    _df[Y] = (_df.fillna(0)[Y] * 10000).astype(int)
+    return _df
 
-    row = _df[_df[Y].isnull()].index.values
-    col = Y
 
-    _df.loc[row, col] = main(_df)
+def fill_norm(df):
+    nan_idx = df[Y].isna().any(axis=1)
+    _df = _norm(df.copy())
+
+    _df.loc[nan_idx, Y] = _main(_df, nan_idx)
 
     return _df
 
 
-def main(df):
-    #normed_df = df.copy()
-    #normed_df
-    train = df.dropna(subset=[Y])
-    train_x = train[X].values
-    train_y = (train[Y].values * 10000).astype(int)
+def _main(df, nan_idx):
+    _df = df.copy()
 
-    test = normed_df[normed_df[Y].isnull()]
-    test_x = test[X].values
+    train = _df[~nan_idx]
+    test = _df[nan_idx]
 
-    #return pred.pred(train_x, train_y, test_x) / 10000
     return pred.pred(train, test, X, Y)
 
 
