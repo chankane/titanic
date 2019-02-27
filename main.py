@@ -4,8 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 
 import pred
-import cabin
-import fare
+from conversion.conv import conv
 
 LABEL_COL = ["Sex", "Embarked"]
 #LABEL_COL = ["Sex"]
@@ -50,22 +49,25 @@ def fill(df):
 
 
 def main():
-    train = pd.read_csv("./data/train.csv")
-    test = pd.read_csv("./data/test.csv")
+    train = pd.read_csv("./data/train.csv", index_col="PassengerId")
+    test = pd.read_csv("./data/test.csv", index_col="PassengerId")
 
     train_len = len(train)
 
-    # Merge
-    df = label(pd.concat((train, test), sort=False))
-    print(df.isna().sum())
+    df = pd.concat((train, test), sort=False)
 
+    df = label(df)
+
+    df = conv(df)
     # print(df.head())
 
     #print(df.isna().sum())
 
-    df = fill(df)
+    #print(df.isna().sum())
 
-    print(df.isna().sum())
+    # df = fill(df)
+
+    #print(df.isna().sum())
 
     #print(df.isna().sum())
     #train = cabin.conv_row(train)

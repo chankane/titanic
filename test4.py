@@ -8,8 +8,15 @@ df = pd.DataFrame([
     [8,  None,  8]
 ], columns=["a", "b", "c"])
 
+
+def hi():
+    A = 0
+    return A
+
 #print(type(df.loc[[True, True, False, False]]))
 #print(type(df.loc[[False, True, False, False]]))
-print(type(df["a"].isna()))
-print(type(df[["a"]].isna().any()))
-print(df[["a", "b"]].isna().any(axis=1))
+for i, e in enumerate(df):
+    print(i, e)
+    print(type(e))
+
+print(hi())

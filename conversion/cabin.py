@@ -1,15 +1,7 @@
-import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 
-import missing as ms
 
 CHERBOURG, QUEENSTOWN, SOUTHAMPTON = range(3)
-MS_FUNC = ms.fill_median
-
-
-def norm(df):
-    return MS_FUNC(replace(df))
 
 
 def conv_e(x):
@@ -18,15 +10,14 @@ def conv_e(x):
     return int(x)
 
 
-def conv_row(df):
-    # Axis y, z, x (negative)
+def conv_def(col):
+    # Positions of seats(negative)
     x, y, z = [], [], []
 
-    cabin = df["Cabin"].str.split()
-    print(cabin)
+    cabin = col.str.split()
 
     for c in cabin:
-        if c is np.nan:
+        if c is pd.np.nan:
             continue
         rx, ry, rz = [], [], []
         for e in c:
@@ -46,6 +37,19 @@ def conv_row(df):
 
     # del df["Cabin"]
     return pd.concat((df, df2), axis=1)
+
+
+def conv(col):
+    # Positions of seats
+    x = pd.np.arange(len(col))
+    y = x * 2
+    z = x ** 2
+
+    return pd.DataFrame({
+        "Cabin_x": x,
+        "Cabin_y": y,
+        "Cabin_z": z,
+    }, index=col.index)
 
 
 def main():
