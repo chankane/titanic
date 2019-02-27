@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
 
 import pred
 from conversion.conv import conv
+from normalization.norm import norm
+from labeling.labeling import label
 
-LABEL_COL = ["Sex", "Embarked"]
-#LABEL_COL = ["Sex"]
+
 """
 X = [
     "PassengerId", "Pclass", "Sex", "Age",
@@ -19,17 +19,6 @@ X = [
     "SibSp", "Parch", "Fare",
 ]
 Y = "Survived"
-
-
-def label(df):
-    _df = df.copy()
-    le = LabelEncoder()
-    for col in LABEL_COL:
-        # Not NaN index
-        idx = ~_df[col].isna()
-        _df.loc[idx, col] \
-            = le.fit(_df.loc[idx, col]).transform(_df.loc[idx, col])
-    return _df
 
 
 def write(pred, idx_offset=0):
@@ -59,8 +48,10 @@ def main():
     df = label(df)
 
     df = conv(df)
-    # print(df.head())
 
+    df = norm(df)
+    print(df.head())
+    # print(df.head())
     #print(df.isna().sum())
 
     #print(df.isna().sum())
