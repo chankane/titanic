@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
 
 import pred
 from conversion.conv import conv
 from normalization.norm import norm
 from labeling.labeling import label
+from filling.filling import fill
 
 
 """
@@ -31,12 +31,6 @@ def write(pred, idx_offset=0):
     df.to_csv("result.csv", index=None)
 
 
-def fill(df):
-    _df = df.copy()
-    _df = fare.fill_norm(_df)
-    return _df
-
-
 def main():
     train = pd.read_csv("./data/train.csv", index_col="PassengerId")
     test = pd.read_csv("./data/test.csv", index_col="PassengerId")
@@ -50,9 +44,10 @@ def main():
     df = conv(df)
 
     df = norm(df)
-    print(df.head())
+    #print(df.head())
     # print(df.head())
     #print(df.isna().sum())
+    df = fill(df)
 
     #print(df.isna().sum())
 

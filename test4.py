@@ -1,12 +1,13 @@
 import pandas as pd
 
 
-df = pd.DataFrame([
-    [1, 1,  1],
-    [1,  None, 1],
-    [None,  1,  1],
-    [1,  None,  1]
-], columns=["a", "b", "c"])
+df = pd.DataFrame({
+    "Id": [1, 2, 3, 4, 5],
+    "Name": ["A", "B", "C", "D", "E"],
+    "Height": [180, 180, 180, 180, 180]
+})
 
-print(df*[3, 4, 5])
+df = df.set_index("Id")
+
 print(df)
+print(df[["Name", "Height"]])

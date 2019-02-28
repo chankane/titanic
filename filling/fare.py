@@ -3,38 +3,40 @@
 import pandas as pd
 
 import pred
-import main as m
 
 
-X = ["PassengerId", "Pclass", "Sex", "SibSp", "Parch"]
+#X = ["PassengerId", "Pclass", "Sex", "SibSp", "Parch"]
+X = ["Pclass", "Sex", "SibSp", "Parch"]
 Y = ["Fare"]
 
 
-# NaN is an float value and need to fill some integer value
-def _norm(df):
+def fill(df):
     _df = df.copy()
-    _df[Y] = (_df.fillna(0)[Y] * 10000).astype(int)
-    return _df
 
+    nan_idx = _df[Y].isna().any(axis=1)
 
-def fill_norm(df):
-    nan_idx = df[Y].isna().any(axis=1)
-    _df = _norm(df.copy())
-
-    _df.loc[nan_idx, Y] = _main(_df, nan_idx)
-
-    return _df
-
-
-def _main(df, nan_idx):
-    _df = df.copy()
+    # NaN is an float value and need to fill some integer value
+    _df = _df.fillna(0)[Y].astype(int)
 
     train = _df[~nan_idx]
     test = _df[nan_idx]
+    print(type(train))
+    print(type(test))
+    print(test)
+    #print(test["PassengerId"])
+    print(test[X])
+    print(test[Y])
 
-    return pred.pred(train, test, X, Y)
+    print(X, Y)
+
+    _df.loc[nan_idx, Y] = pred.pred(train, test, X, Y)
+
+    return _df
+
+
+def _main():
+    pass
 
 
 if __name__ == "__main__":
-    df = m.replace(read()).loc[:, X + [Y]]
-    print(main(df))
+    main()

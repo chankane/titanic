@@ -1,9 +1,6 @@
 import pandas as pd
 
 
-CHERBOURG, QUEENSTOWN, SOUTHAMPTON = range(3)
-
-
 def conv_e(x):
     if x == "":
         return 0
@@ -39,17 +36,20 @@ def conv_def(col):
     return pd.concat((df, df2), axis=1)
 
 
-def conv(col):
+def conv(df):
+    _df = df.copy()
     # Positions of seats
-    x = pd.np.arange(len(col))
+    x = pd.np.arange(len(_df))
     y = x * 2
     z = x ** 2
 
-    return pd.DataFrame({
-        "Cabin_x": x,
-        "Cabin_y": y,
-        "Cabin_z": z,
-    }, index=col.index)
+    _df["Cabin_x"] = x
+    _df["Cabin_y"] = y
+    _df["Cabin_z"] = z
+
+    del _df["Cabin"]
+
+    return _df
 
 
 def main():
