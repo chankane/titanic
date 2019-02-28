@@ -13,7 +13,9 @@ def pred(train, test, x, y):
     )
     clf = clf.fit(train_x, train_y)
 
-    return clf.predict(test_x)
+    tmp = clf.predict(test_x)
+    print(tmp)
+    return tmp
 
 
 def _pred(train_x, train_y, test_x):

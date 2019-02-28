@@ -8,27 +8,8 @@ from labeling.labeling import label
 from filling.filling import fill
 
 
-"""
-X = [
-    "PassengerId", "Pclass", "Sex", "Age",
-    "SibSp", "Parch", "Fare", "Embarked",
-]
-"""
-X = [
-    "PassengerId", "Pclass", "Sex",
-    "SibSp", "Parch", "Fare",
-]
-Y = "Survived"
-
-
-def write(pred, idx_offset=0):
-    idx = np.arange(len(pred)) + idx_offset
-
-    df = pd.DataFrame({
-        X[0]: idx,
-        Y[0]: pred,
-    })
-    df.to_csv("result.csv", index=None)
+def write(pred):
+    pred.to_csv("result.csv")
 
 
 def main():
@@ -43,25 +24,13 @@ def main():
 
     df = conv(df)
 
-    df = norm(df)
-    #print(df.head())
-    # print(df.head())
-    #print(df.isna().sum())
+    print(df.isna().sum())
     df = fill(df)
+    print(df.isna().sum())
 
-    #print(df.isna().sum())
+    print(df)
 
-    # df = fill(df)
-
-    #print(df.isna().sum())
-
-    #print(df.isna().sum())
-    #train = cabin.conv_row(train)
-    #test = cabin.conv_row(test)
-    #train = df.iloc[:train_len]
-    #test = df.iloc[train_len:]
-
-    #write(pred.pred(train, test, X, Y), train_len + 1)
+    #write(df.loc[train_len + 1:, ["Survived"]])
 
 
 if __name__ == "__main__":

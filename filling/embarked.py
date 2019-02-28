@@ -1,12 +1,12 @@
-# Fill "Fare"
+# Fill "Embarked"
 import pandas as pd
 
 import pred
 
 
 #X = ["PassengerId", "Pclass", "Sex", "SibSp", "Parch"]
-X = ["Pclass", "Sex", "SibSp", "Parch"]
-Y = ["Fare"]
+X = ["Pclass", "Sex", "SibSp", "Parch", "Fare"]
+Y = ["Embarked"]
 
 
 def fill(df):
@@ -15,16 +15,12 @@ def fill(df):
     nan_idx = _df[Y].isna().any(axis=1)
 
     # NaN is an float value and need to fill some integer value
-    # Normalize
-    _df[Y] = (_df.fillna(0)[Y] * 10000).astype(int)
+    _df[Y] = _df.fillna(0)[Y].astype(int)
 
     train = _df[~nan_idx]
     test = _df[nan_idx]
 
     _df.loc[nan_idx, Y] = pred.pred(train, test, X, Y)
-
-    # Revert Normalization
-    _df[Y] /= 10000
 
     return _df
 
