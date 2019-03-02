@@ -1,10 +1,10 @@
 import pandas as pd
 
-from . import cabin
+from . import xyz
 
 
 CONV_FUNC_LIST = [
-    cabin.conv,
+    xyz.conv,
 ]
 
 

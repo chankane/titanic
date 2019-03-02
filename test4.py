@@ -3,20 +3,28 @@ import pandas as pd
 from pred import pred
 
 
-df = pd.DataFrame({
-    "Id": [1, 2, 3, 4, 5],
-    "Weight": [0.6, 0.7, 0.8, 0.9, 1.0],
-    "Height": [160, 170, 180, None, 200]
-})
+def get_pos(x):
+    return pd.np.array([x, 2*x, 3*x, pd.np.nan])
 
-df = df.set_index("Id")
 
-print(df)
+x = [1, pd.np.nan, 2, 3, 4, pd.np.nan, 5, pd.np.nan]
 
-train = df.loc[[1, 2, 3, 5]]
-test = df.loc[[4]]
-x = ["Weight"]
-y = ["Height"]
-p = pred(train, test, x, y)
-print(p)
-print(None * 3)
+n = pd.np.array([get_pos(e) for e in x])
+
+a = pd.np.array([
+    [1, pd.np.nan, 1, 1, 1],
+    [2, 2, 2, pd.np.nan, 2],
+    [1, pd.np.nan, 1, 1, 1],
+    [2, 2, 2, pd.np.nan, 2],
+    [1, pd.np.nan, 1, 1, 1],
+])
+
+print(a[:, 3])
+
+nans = [pd.np.nan] * 3
+
+print(nans)
+
+np_nans = pd.np.array(nans)
+
+print(np_nans)
