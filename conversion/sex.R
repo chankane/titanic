@@ -1,14 +1,12 @@
-# ただのラベリング
+# 質的データを量的データに変換
 
 source("util/util.R")
 
 df <- ReadData()
 
-# 順番を間違えると悲惨になる
-df$Sex <- gsub("female", 1, df$Sex)
-df$Sex <- gsub("male", 0, df$Sex)
+# 女性は 1
+df$Female <- as.integer(df$Sex == "female")
 
-# こうしないと文字データのまま
-df$Sex <- as.numeric(df$Sex)
+df$Sex <- NULL
 
 WriteData(df)
