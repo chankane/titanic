@@ -1,28 +1,30 @@
 # 線形回帰分析で補間
-
+library("robustbase")
 source("util/util.R")
 
 
-# 行数優先
-ManyRow <- function(df) {
-  df <- df[c("Fare", "Pclass", "SibSp", "Parch", "Female", "C")]
-  df[is.na(df ]
-}
-
+# 評価に使う列
+kCol <- list(
+  row = c("Fare", "Pclass", "SibSp", "Parch", "Female"),  # 行数を優先
+  col = c("Fare", "Pclass", "Age", "SibSp", "Parch", "Female", "C", "Q")  # 列数を優先
+)
 
 df <- ReadData()
 
-head(ManyRow(df))
+train <- df[kCol$row]
+train <- train[complete.cases(train), ]
 
-#Fare <- df$Fare  # df$Fare を直接下に代入すると、df$Fare という名前の列ができる
-#df.x = cbind(DropColumnsOfNa(df), Fare)
+#model <- lmrob(Fare ~ Pclass + SibSp + Parch + Female, data=train)  # 1
+#model <- lmrob(Fare ~ poly(Pclass, 2) + poly(SibSp, 2) + poly(Parch, 2) + Female, data=train)  # 2
+#model <- lmrob(Fare ~ poly(Pclass, 2) + poly(SibSp, 3) + poly(Parch, 3) + Female, data=train)  # 3
+model <- lmrob(Fare ~ poly(Pclass, 2) + poly(SibSp, 4) + poly(Parch, 4) + Female, data=train)  # 4
 
-#model <- lm(df$Fare ~ ., data=ManyRow(df))
+model
 
 na.idx <- is.na(df$Fare)
 
-#pred = predict(model, df[na.idx, ])
+df[na.idx, "Fare"] <- predict(model, df[na.idx, ])
 
-#df[na.idx, ] = pred
+df[na.idx, ]
 
 #WriteData(df)

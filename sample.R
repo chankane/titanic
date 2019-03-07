@@ -1,3 +1,3 @@
-x = rnorm(10000)
+a <- array("a", 0, T)
 
-hist(x)
+a
