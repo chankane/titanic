@@ -34,3 +34,9 @@ CountNa <- function(df) {
 DropColumnsOfNa <- function(df) {
   df[CountNa(df) == 0]
 }
+
+
+ConvertFormulaToColumns = function(formula) {
+  tmp <- all.vars(formula)
+  tmp[!(tmp %in% "T")]
+}

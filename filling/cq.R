@@ -12,6 +12,7 @@ kFormula <- list(
     + poly(SibSp,  4, raw=T)
     + poly(Parch,  4, raw=T)
     + Female
+    + poly(Fare,  4, raw=T)
   ),
   # 列数を優先
   col.size.priority = Fare ~ (
@@ -22,6 +23,7 @@ kFormula <- list(
     + Female
     + C
     + Q
+    + poly(Fare,  4, raw=T)
   )
 )
 
