@@ -16,6 +16,7 @@ kFormula <- list(
     + Female
     + C
     + Q
+    + WasNa
   ),
   # 列数を優先
   col.size.priority = Survived ~ (
@@ -27,6 +28,7 @@ kFormula <- list(
     + Female
     + C
     + Q
+    + WasNa
   ),
   # 関係なさそうな項を除外
   after.p.test = Survived ~ (
@@ -38,6 +40,7 @@ kFormula <- list(
     + Female
     + C
     + Q
+    + WasNa
   )
 )
 
@@ -69,4 +72,4 @@ head(df[na.idx, ], 30)
 
 #summary(model)
 
-WriteData(df)
+#WriteData(df)

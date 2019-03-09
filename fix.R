@@ -1,3 +1,4 @@
+# 埋めた Survived をもとに戻す
 source("util/util.R")
 
 df.def <- ReadTrainAndTest()
