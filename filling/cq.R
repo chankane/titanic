@@ -1,49 +1,57 @@
-# 回帰分析で補間
+# ランダムフォレストで補間
 
-library("robustbase")
+library("randomForest")
 source("util/util.R")
 
 
-# 評価に使う列（とりま 4 次式）
+# 評価に使う列
 kFormula <- list(
   # 行数を優先
-  row.size.priority = Fare ~ (
-    + poly(Pclass, 2, raw=T)
-    + poly(SibSp,  4, raw=T)
-    + poly(Parch,  4, raw=T)
+  row.size.priority = Embarked ~ (
+    + Pclass
+    + SibSp
+    + Parch
+    + Fare
     + Female
-    + poly(Fare,  4, raw=T)
   ),
   # 列数を優先
-  col.size.priority = Fare ~ (
-    + poly(Pclass, 2, raw=T)
-    + poly(Age,    4, raw=T)
-    + poly(SibSp,  4, raw=T)
-    + poly(Parch,  4, raw=T)
+  col.size.priority = Embarked ~ (
+    + Pclass
+    + Age
+    + SibSp
+    + Parch
+    + Fare
     + Female
-    + C
-    + Q
-    + poly(Fare,  4, raw=T)
   )
 )
 
 
-f <- kFormula$row.size.priority
-#f <- kFormula$col.size.priority
+#f <- kFormula$row.size.priority
+f <- kFormula$col.size.priority
 
 columns <- ConvertFormulaToColumns(f)
 
 df <- ReadData()
 
+df$Embarked <- NA
+df$Embarked[df$C == 1] <- "C"
+df$Embarked[df$Q == 1] <- "Q"
+df$Embarked[df$C + df$Q == 0] <- "S"
+df$Embarked <- as.factor(df$Embarked)  # デフォルトだと character 型
+
 train <- df[columns]
 train <- train[complete.cases(train), ]
 
-# maxit.scale=200 では収束しない
-model <- lmrob(f, data=train, setting="KS2014", maxit.scale=500)
+model <- randomForest(f, data=train)
 
-na.idx <- is.na(df$Fare)
+na.idx <- is.na(df$Embarked)
 
-df[na.idx, "Fare"] <- predict(model, df[na.idx, ])
+df[na.idx, "Embarked"] <- predict(model, df[na.idx, ])
+
+df$C <- as.integer(df$Embarked == "C")
+df$Q <- as.integer(df$Embarked == "Q")
+
+df$Embarked <- NULL
 
 df[na.idx, ]
 
